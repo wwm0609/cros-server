@@ -9,12 +9,17 @@ const router = new KoaRouter();
 
 router.post('/github_access_token', async (ctx, next) => {
   const reqBody = ctx.request.body;
-  const res = await axios.post('https://github.com/login/oauth/access_token', reqBody);
-  const params = new URLSearchParams(res.data);
-  ctx.body = Array.from(params.entries()).reduce((obj, [key, value]) => {
-    obj[key] = value;
-    return obj;
-  }, {});
+  // my oauth: {"code":"xxx","client_id":"Ov23li4qKIP85kRW0YK1","client_secret":"xxx"}
+  if ( client_id["client_id"] != "Ov23li4qKIP85kRW0YK1" ) {
+    ctx.body = "unsupported client_id";
+  } else {
+    const res = await axios.post('https://github.com/login/oauth/access_token', reqBody);
+    const params = new URLSearchParams(res.data);
+    ctx.body = Array.from(params.entries()).reduce((obj, [key, value]) => {
+      obj[key] = value;
+      return obj;
+    }, {});
+  }
   await next();
 });
 
